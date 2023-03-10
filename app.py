@@ -23,15 +23,6 @@ class UsersApi(MethodView):
 
         return {"user": user}
 
-    def post(self):
-        data = request.json
-        last_user_id = users[-1].get("id")
-
-        new_user = {"id": last_user_id + 1, **data}
-        users.append(new_user)
-
-        return {"msg": "User created", "user": new_user}
-
     def put(self, user_id):
         data = request.json
 
@@ -45,6 +36,15 @@ class UsersApi(MethodView):
             abort(404)
 
         return {"msg": "User updated", "user": user}
+
+    def post(self):
+        data = request.json
+        last_user_id = users[-1].get("id")
+
+        new_user = {"id": last_user_id + 1, **data}
+        users.append(new_user)
+
+        return {"msg": "User created", "user": new_user}, 201
 
     def delete(self, user_id):
         user = None
@@ -60,8 +60,8 @@ class UsersApi(MethodView):
 
 
 user_view = UsersApi.as_view("users_api")
-app.add_url_rule('/api/users', view_func=user_view, methods=['GET', 'POST'])
-app.add_url_rule('/api/users/<int:user_id>', view_func=user_view, methods=['GET', 'PUT', 'PATCH', 'DELETE'])
+app.add_url_rule("/api/users", view_func=user_view, methods=["GET", "POST"])
+app.add_url_rule("/api/users/<int:user_id>", view_func=user_view, methods=["GET", "PUT", "PATCH", "DELETE"])
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000, debug=True)
